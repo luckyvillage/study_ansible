@@ -1,0 +1,32 @@
+---
+- name: Apacheのインストール
+  hosts: private
+  become: true
+  tasks:
+    - name: Apacheをインストール
+      yum:
+        name: "{{item}}"
+        state: present
+      with_items:
+        - httpd
+        - httpd-tools
+
+    - name: index.htmlテンプレートを展開
+      template:
+        src: template/index.html.j2
+        dest: /var/www/html/index.html
+        backup: true
+      notify:
+        - httpdサービスのリロード
+
+    - name: Apacheの起動と自動起動設定
+      service:
+        name: httpd
+        state: started
+        enabled: yes
+
+  handlers:
+    - name: httpdサービスのリロード
+      service:
+        name: httpd
+        state: reloaded
