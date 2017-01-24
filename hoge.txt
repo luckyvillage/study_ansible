@@ -1,4 +1,4 @@
 test
 oあああ
 aaa
-hoge
+hoge テスト
